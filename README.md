@@ -3,7 +3,7 @@
     The easiest way to schedule work with mouse
     You can add new jobs or remove old ones on the fly as you please.
 <h3>Image</h3>
-    ![Image](https://github.com/edmondsun/calendar-schedule/blob/master/schedule.png)
+    ![resize()](schedule.png)
 <h3>Demo Site</h3>
    <a href="http://makodoben.github.io/Schedule">&nbsp;&nbsp; Demo Website</a>
 <h3>Quick Start</h3>
