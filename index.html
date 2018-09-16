@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Schedule</title>
+		<meta charset="uft-8">
+		<link rel="stylesheet" href="./style/jquery-ui-1.8.11.custom.css" type="text/css">
+		<link rel="stylesheet" href="./style/jquery.weekcalendar.css" type="text/css">
+		<script language="javascript" src="./js/jquery.min.js" type="text/javascript"></script>
+		<script language="javascript" src="./js/jquery-ui-1.8.11.custom.min.js" type="text/javascript"></script>
+		<script language="javascript" src="./js/date.js" type="text/javascript"></script>
+		<script language="javascript" src="./js/jquery.weekcalendar.js" type="text/javascript"></script>
+	</head>
+	<body onload="OnLoad()">
+		<div id="calendar"></div>
+	</body>
+</html>
+		
+<script type="text/javascript">
+	var store = { events : [] };
+	
+	function splitTime(eventDay, eventNum, eventTimeSlot)
+	{
+		var getToday = new Date(),
+				x = parseInt(eventDay.split("Schedule")[1], 10),	
+				starDate, endDate;
+
+		getToday.setDate(getToday.getDate()-getToday.getDay() + x);    
+
+		starDate = new Date( 
+			parseInt(getToday.getFullYear(), 10),
+			parseInt(getToday.getMonth(), 10),
+			parseInt(getToday.getDate(), 10),
+			eventTimeSlot[0].split(":")[0],
+			eventTimeSlot[0].split(":")[1]
+		);
+		endDate = new Date( 
+			parseInt(getToday.getFullYear(), 10),
+			parseInt(getToday.getMonth(), 10),
+			parseInt(getToday.getDate(), 10),
+			eventTimeSlot[1].split(":")[0],
+			eventTimeSlot[1].split(":")[1]
+		);
+
+		store.events.push({
+			'id'    : eventNum,
+			'days'  : eventDay,
+			'start' : starDate, 
+			'end'   : endDate,
+			'title' : "New Event"
+		});
+	}
+	
+	function initStore()
+	{
+		var scheduleArray = {}, dayTimeSlot, eventSlot;
+			
+		// set the schedule time slot and the delimiter is !
+		scheduleArray = {
+			Schedule0 : "00:00-09:00!12:00-15:00",
+			Schedule1 : "05:00-09:00!13:30-17:00",
+			Schedule2 : "00:00-23:59",
+			Schedule3 : "00:00-23:59",
+			Schedule4 : "00:00-23:59",
+			Schedule5 : "00:00-23:59",
+			Schedule6 : "00:00-23:59"
+		}				
+		
+		for (var x in scheduleArray) {
+			if ( scheduleArray.hasOwnProperty(x) ) {
+				if (scheduleArray[x].toString() != "") {
+					dayTimeSlot = scheduleArray[x].toString().split("!");
+					for (var y in dayTimeSlot) {
+						eventSlot = dayTimeSlot[y].split("-");
+						splitTime(x, y, eventSlot);
+					}
+				}
+			}
+		}	  				
+	}		
+	
+	function OnLoad()
+	{
+		var dateData = new Date();
+			
+		initStore();
+
+		$('#calendar').weekCalendar({
+		  data: store,
+		  date: new Date( 
+		  	dateData.getFullYear(),
+				parseInt(dateData.getMonth(), 10),
+				dateData.getDate() 
+			),
+		  timeslotsPerHour: 2,
+		  height: function($calendar) {
+				return $(window).height() - $('h1').outerHeight() - $('.description').outerHeight();
+		  },
+		  eventRender: function(calEvent, $event) {
+				if (calEvent.end.getTime() < new Date().getTime()) {
+				  $event.css('backgroundColor', '#aaa');
+				  $event.find('.time').css({'backgroundColor': '#999', 'border':'1px solid #888'});
+				}
+		  }
+		});
+	}
+</script>
